@@ -45,6 +45,8 @@ for reference (`red_pill_blue_pill.html.zip` and `inverted_pendulum.html.zip`).
     title={Burning {RED}: {U}nlocking Subtask-Driven Reinforcement Learning and Risk-Awareness in Average-Reward {M}arkov Decision Processes},
     author={Rojas, Juan Sebastian and Lee, Chi-Guhn},
     journal={Reinforcement Learning Journal},
+    volume={6},
+    pages={431--477},
     year={2025}
 }
 ```
