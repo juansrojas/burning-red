@@ -15,8 +15,6 @@ class RLAgent:
                  policy_softmax_tau=1.0, policy_update_type='stochastic_gradient_descent', policy_loss=None,
                  value_type='tabular', value_network=None, value_update_type='stochastic_gradient_descent',
                  value_loss=None, beta_m_adam=0.9, beta_v_adam=0.999, epsilon_adam=1e-8, pytorch_device='cpu',
-                 use_experience_replay=False, replay_buffer_min_size=None, replay_buffer_max_size=None,
-                 replay_buffer_batch_size=None, target_network_step_size=0.005,
                  use_cvar=False, var_quantile=0.1, initial_var_reward=0.0):
 
         # initialize instance variables
@@ -46,16 +44,6 @@ class RLAgent:
         self.beta_m_adam = beta_m_adam
         self.beta_v_adam = beta_v_adam
         self.epsilon_adam = epsilon_adam
-
-        # experience replay
-        self.use_experience_replay = use_experience_replay
-        if self.use_experience_replay:
-            self.replay_buffer = ReplayBuffer(replay_buffer_max_size)
-            self.replay_buffer_min_size = replay_buffer_min_size
-            self.replay_buffer_max_size = replay_buffer_max_size
-            self.replay_buffer_batch_size = replay_buffer_batch_size
-            self.target_network_step_size = target_network_step_size
-            self.neural_network_target_value = None  # target network
 
         #################################
         # state and state-action values
@@ -186,9 +174,6 @@ class RLAgent:
             if 'load_weights' in self.policy_network_config.keys():
                 self.neural_network_policy['network'].load_state_dict(torch.load(self.policy_network_config['load_weights']['file_path']))
 
-        if self.use_experience_replay:
-            self.neural_network_target_value = copy.deepcopy(self.neural_network_value)
-
         return
 
     def get_max_value(self, values):
@@ -294,12 +279,7 @@ class RLAgent:
 
     def get_target_value(self, state, action=None, get_all_actions=False, get_raw_discrete_action_network_values=False):
         # returns the target state or state-action value
-        if not self.use_experience_replay:
-            # if we are not using experience replay, return regular value
-            return self.get_value(state, action, use_target_network=False, get_all_actions=get_all_actions, get_raw_discrete_action_network_values=get_raw_discrete_action_network_values)
-        else:
-            # otherwise, get value from target network
-            return self.get_value(state, action, use_target_network=True, get_all_actions=get_all_actions, get_raw_discrete_action_network_values=get_raw_discrete_action_network_values)
+        return self.get_value(state, action, use_target_network=True, get_all_actions=get_all_actions, get_raw_discrete_action_network_values=get_raw_discrete_action_network_values)
 
     def get_softmax_probabilities(self, state):
         # get the softmax policy conditional on a given state
