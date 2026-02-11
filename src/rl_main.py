@@ -23,11 +23,8 @@ class ReinforcementLearning:
         # initialize state representation function
         self.state_representation = copy.deepcopy(state_representation)
 
-        # choose how to perform step based on whether we are doing experience replay
-        if self.agent.use_experience_replay:
-            self.agent_step = self.agent.agent_step_with_experience_replay
-        else:
-            self.agent_step = self.agent.agent_step
+        # set agent step
+        self.agent_step = self.agent.agent_step
 
         # keep track of RL data
         self.track_data = track_data

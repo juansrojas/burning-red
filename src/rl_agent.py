@@ -2,11 +2,9 @@ import importlib.util
 import pandas as pd
 import numpy as np
 import torch
-import copy
 import sys
 
 from src.rl_losses import RLLosses
-from src.replay_buffer import ReplayBuffer
 
 
 class RLAgent:
@@ -242,7 +240,7 @@ class RLAgent:
         action_index = self.get_action_index(state, action)
         return values[range(state.shape[0]), action_index]
 
-    def get_value(self, state, action=None, use_target_network=False, get_all_actions=False, get_raw_discrete_action_network_values=False):
+    def get_value(self, state, action=None, get_all_actions=False, get_raw_discrete_action_network_values=False):
         # returns the state or state-action value
 
         # tabular case
@@ -257,10 +255,7 @@ class RLAgent:
 
         # value-function approximation
         else:
-            if use_target_network:
-                network = self.neural_network_target_value
-            else:
-                network = self.neural_network_value
+            network = self.neural_network_value
 
             if self.action_type == 'discrete':
                 network_values = network['network'].get_values(state)
@@ -279,7 +274,7 @@ class RLAgent:
 
     def get_target_value(self, state, action=None, get_all_actions=False, get_raw_discrete_action_network_values=False):
         # returns the target state or state-action value
-        return self.get_value(state, action, use_target_network=True, get_all_actions=get_all_actions, get_raw_discrete_action_network_values=get_raw_discrete_action_network_values)
+        return self.get_value(state, action, get_all_actions=get_all_actions, get_raw_discrete_action_network_values=get_raw_discrete_action_network_values)
 
     def get_softmax_probabilities(self, state):
         # get the softmax policy conditional on a given state
