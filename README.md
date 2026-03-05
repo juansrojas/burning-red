@@ -28,7 +28,7 @@ explicit bi-level optimization scheme or an augmented state-space.
 
 To install requirements:
 
-```setup
+```
 pip install -r requirements.txt
 ```
 
